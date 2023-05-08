@@ -1,0 +1,140 @@
+version: 0.2
+env:
+  parameter-store:
+    create_default_dms_roles: /demo/dbdevops/dms/create_default_roles
+    create_dms_subnet_group: /demo/dbdevops/dms/create_subnet_group
+    dms_subnet_group_id: /demo/dbdevops/dms/subnet_group_id
+    dms_subnet_ids: /demo/dbdevops/dms/subnet_id
+    ri_count: /demo/dbdevops/dms/ri_count
+    ri_prefix: /demo/dbdevops/dms/ri_prefix
+    ri_multi_az: /demo/dbdevops/dms/ri_multi_az
+    ri_publicly_accessible: /demo/dbdevops/dms/ri_public_access
+    ri_instance_class: /demo/dbdevops/dms/ri_instnace_class
+    ri_engine_version: /demo/dbdevops/dms/ri_engine_version
+    ri_allocated_storage: /demo/dbdevops/dms/ri_allocated_storage
+    ri_vpc_security_group_ids: /demo/dbdevops/dms/ri_sg_ids
+    ri_monitoring_sns_topic: /demo/dbdevops/dms/ri_sns_topic
+    ri_cw_logs_retentions: /demo/dbdevops/dms/ri_cw_logs_retention
+    CW_CustomNameSpace: /demo/dbdevops/dms/cw_custom_namespace
+    ri_preferred_maintenance_window: /demo/dbdevops/dms/ri_maint_window
+    oracle_db_version: /demo/dbdevops/source/db/version
+    src_db_secret: /demo/dbdevops/source/db/secret_mgr_name
+    src_ep_prefix: /demo/dbdevops/source/db/dms_endpoint_prefix
+    src_db_engine: /demo/dbdevops/source/db/engine
+    src_db_name: /demo/dbdevops/source/db/name
+    src_db_port: /demo/dbdevops/source/db/port
+    src_db_host: /demo/dbdevops/source/db/host
+    src_read_replica: /demo/dbdevops/source/read_replica
+    src_rds: /demo/dbdevops/source/rds
+    create_src_dms_certificate: /demo/dbdevops/source/create_src_dms_certificate
+    src_dms_certificate_name: /demo/dbdevops/target/db/dms_certificate_name
+    tgt_db_secret: /demo/dbdevops/target/db/secret_mgr_name
+    tgt_ep_prefix: /demo/dbdevops/target/db/dms_endpoint_prefix
+    tgt_db_engine: /demo/dbdevops/target/db/engine
+    tgt_db_name: /demo/dbdevops/target/db/dbname
+    tgt_db_port: /demo/dbdevops/target/db/port
+    tgt_db_host: /demo/dbdevops/target/db/ssm/host
+    tgt_ssl_mode: /demo/dbdevops/target/db/ssl_mode
+    create_tgt_dms_certificate: /demo/dbdevops/target/db/create_tgt_dms_certificate
+    tgt_dms_certificate_name: /demo/dbdevops/target/db/dms_certificate_name
+  exported-variables:
+    - create_default_dms_roles
+    - create_dms_subnet_group
+    - dms_subnet_group_id
+    - dms_subnet_ids
+    - ri_count
+    - ri_prefix
+    - ri_publicly_accessible
+    - ri_availability_zone
+    - ri_instance_class
+    - ri_engine_version
+    - ri_allocated_storage
+    - ri_vpc_security_group_ids
+    - ri_monitoring_sns_topic
+    - ri_cw_logs_retentions
+    - CW_CustomNameSpace
+    - ri_preferred_maintenance_window
+    - oracle_db_version
+    - src_db_secret
+    - src_ep_prefix
+    - src_db_engine
+    - src_db_name
+    - src_db_port
+    - src_db_host
+    - src_read_replica
+    - src_rds
+    - create_src_dms_certificate
+    - src_dms_certificate_name
+    - tgt_db_secret
+    - tgt_ep_prefix
+    - tgt_db_engine
+    - tgt_db_name
+    - tgt_db_port
+    - tgt_db_host
+    - tgt_ssl_mode
+    - create_tgt_dms_certificate
+    - tgt_dms_certificate_name
+phases:
+  install:
+    commands:
+    - apt update
+    - apt -y install curl
+    - curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+    - apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+    - apt update
+    - apt -y install terraform=1.2.9
+    
+  build:
+    commands:
+      - ls -lart
+      - pwd
+      - "cd ${CODEBUILD_SRC_DIR}/db-dms/db-dms-code/dms/Infra"
+      - "echo ${dms_subnet_ids}"
+      - "echo ${ri_vpc_security_group_ids}"
+      - "export TF_VAR_dms_subnet_ids=${dms_subnet_ids}"
+      - "export TF_VAR_ri_vpc_security_group_ids=${ri_vpc_security_group_ids}"
+      - "export TF_VAR_create_default_dms_roles=${create_default_dms_roles}"
+      - "export TF_VAR_dms_subnet_group_id=${dms_subnet_group_id}"
+      - "export TF_VAR_ri_count=${ri_count}"
+      - "export TF_VAR_ri_prefix=${ri_prefix}"
+      - "export TF_VAR_ri_multi_az=${ri_multi_az}"
+      - "export TF_VAR_ri_publicly_accessible=${ri_publicly_accessible}"
+      - "export TF_VAR_ri_availability_zone=${ri_availability_zone}"
+      - "export TF_VAR_ri_instance_class=${ri_instance_class}"
+      - "export TF_VAR_ri_engine_version=${ri_engine_version}"
+      - "export TF_VAR_ri_allocated_storage=${ri_allocated_storage}"
+      - "export TF_VAR_ri_monitoring_sns_topic=${ri_monitoring_sns_topic}"
+      - "export TF_VAR_ri_cw_logs_retentions=${ri_cw_logs_retentions}"
+      - "export TF_VAR_CW_CustomNameSpace=${CW_CustomNameSpace}"
+      - "export TF_VAR_ri_preferred_maintenance_window=${ri_preferred_maintenance_window}"
+      - "export TF_VAR_oracle_db_version=${oracle_db_version}"
+      - "export TF_VAR_src_db_secret=${src_db_secret}"
+      - "export TF_VAR_src_ep_prefix=${src_ep_prefix}"
+      - "export TF_VAR_src_db_engine=${src_db_engine}"
+      - "export TF_VAR_src_db_name=${src_db_name}"
+      - "export TF_VAR_src_db_port=${src_db_port}"
+      - "export TF_VAR_src_db_host=${src_db_host}"
+      - "export TF_VAR_src_read_replica=${src_read_replica}"
+      - "export TF_VAR_src_rds=${src_rds}"
+      - "export TF_VAR_src_extra_connection_attributes=${src_extra_connection_attributes}"
+      - "export TF_VAR_create_src_dms_certificate=${create_src_dms_certificate}"
+      - "export TF_VAR_src_dms_certificate_name=${src_dms_certificate_name}"
+      - "export TF_VAR_src_dms_certificate_arn=${src_dms_certificate_arn}"
+      - "export TF_VAR_tgt_db_secret=${tgt_db_secret}"
+      - "export TF_VAR_tgt_ep_prefix=${tgt_ep_prefix}"
+      - "export TF_VAR_tgt_db_engine=${tgt_db_engine}"
+      - "export TF_VAR_tgt_db_name=${tgt_db_name}"
+      - "export TF_VAR_tgt_db_port=${tgt_db_port}"
+      - "export TF_VAR_tgt_db_host=${tgt_db_host}"
+      - "export TF_VAR_tgt_ssl_mode=${tgt_ssl_mode}"
+      - "export TF_VAR_tgt_extra_connection_attributes=${tgt_extra_connection_attributes}"
+      - "export TF_VAR_create_tgt_dms_certificate=${create_tgt_dms_certificate}"
+      - "export TF_VAR_tgt_dms_certificate_name=${tgt_dms_certificate_name}"
+      - "export TF_VAR_tgt_dms_certificate_arn=${tgt_dms_certificate_arn}"
+      - terraform fmt -recursive
+      - terraform init
+      - "echo ## TERRAFORM PLAN : Starting with the Terraform PLAN"
+      - terraform plan -lock=false -out=tfplan
+artifacts:
+  files:
+    - '**/*'

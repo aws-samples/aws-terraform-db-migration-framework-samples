@@ -1,0 +1,21 @@
+version: 0.2
+
+env:
+  variables:
+    NODE_ENV: "${env}"
+  parameter-store:
+    aws_region: "/demo/dbdevops/target/infra/aws_region"
+    account_id: "/demo/dbdevops/target/infra/aws_account_id"
+
+phases:
+  install:
+    commands:
+      - echo Install required tools
+  pre_build:
+    commands:
+      - echo Prebuild phase
+  build:
+    commands:
+      - echo validate provided account
+      - echo $aws_region
+      - ./db-validation/terraform-iac/scripts/validation-checks.sh account $aws_region

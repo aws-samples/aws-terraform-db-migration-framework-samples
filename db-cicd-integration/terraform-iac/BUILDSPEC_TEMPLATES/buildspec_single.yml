@@ -1,0 +1,11 @@
+version: 0.2
+env:
+  variables:
+    CODE_SRC_DIR: "."
+
+phases:
+  build:
+    commands:
+      - "cd ${CODEBUILD_SRC_DIR}/db-cicd-integration/terraform-iac"
+      - "echo ## VALIDATION : Starting ..."
+      - "/bin/bash ./trigger.sh $PipelineName $sleeptime"

@@ -1,0 +1,22 @@
+version: 0.2
+phases:
+  install:
+    commands:
+    - apt update
+    - apt -y install curl
+    - curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+    - apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+    - apt update
+    - apt -y install terraform=1.2.9
+    - apt -y install software-properties-common
+    - add-apt-repository ppa:deadsnakes/ppa
+    - apt -y install python3.7
+    - apt -y install python3-pip
+    - apt-get install python3.7-distutils -y
+    - python3.7 -m pip install -U checkov
+    - checkov -v
+  build:
+    commands:
+    - "cd ${CODEBUILD_SRC_DIR}/db-dms/db-dms-code/dms/Infra"
+    - ls -lart
+    - pwd

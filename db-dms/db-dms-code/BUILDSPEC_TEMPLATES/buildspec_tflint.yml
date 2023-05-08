@@ -1,0 +1,102 @@
+version: 0.2
+env:
+  parameter-store:
+    create_default_dms_roles: /demo/dbdevops/dms/create_default_roles
+    create_dms_subnet_group: /demo/dbdevops/dms/create_subnet_group
+    dms_subnet_group_id: /demo/dbdevops/dms/subnet_group_id
+    dms_subnet_ids: /demo/dbdevops/dms/subnet_id
+    ri_count: /demo/dbdevops/dms/ri_count
+    ri_prefix: /demo/dbdevops/dms/ri_prefix
+    ri_multi_az: /demo/dbdevops/dms/ri_multi_az
+    ri_publicly_accessible: /demo/dbdevops/dms/ri_public_access
+    ri_instance_class: /demo/dbdevops/dms/ri_instnace_class
+    ri_engine_version: /demo/dbdevops/dms/ri_engine_version
+    ri_allocated_storage: /demo/dbdevops/dms/ri_allocated_storage
+    ri_vpc_security_group_ids: /demo/dbdevops/dms/ri_sg_ids
+    ri_monitoring_sns_topic: /demo/dbdevops/dms/ri_sns_topic
+    ri_cw_logs_retentions: /demo/dbdevops/dms/ri_cw_logs_retention
+    CW_CustomNameSpace: /demo/dbdevops/dms/cw_custom_namespace
+    ri_preferred_maintenance_window: /demo/dbdevops/dms/ri_maint_window
+    oracle_db_version: /demo/dbdevops/source/db/version
+    src_db_secret: /demo/dbdevops/source/db/secret_mgr_name
+    src_ep_prefix: /demo/dbdevops/source/db/dms_endpoint_prefix
+    src_db_engine: /demo/dbdevops/source/db/engine
+    src_db_name: /demo/dbdevops/source/db/name
+    src_db_port: /demo/dbdevops/source/db/port
+    src_db_host: /demo/dbdevops/source/db/host
+    src_read_replica: /demo/dbdevops/source/read_replica
+    src_rds: /demo/dbdevops/source/rds
+    create_src_dms_certificate: /demo/dbdevops/source/create_src_dms_certificate
+    src_dms_certificate_name: /demo/dbdevops/target/db/dms_certificate_name
+    tgt_db_secret: /demo/dbdevops/target/db/secret_mgr_name
+    tgt_ep_prefix: /demo/dbdevops/target/db/dms_endpoint_prefix
+    tgt_db_engine: /demo/dbdevops/target/db/engine
+    tgt_db_name: /demo/dbdevops/target/db/dbname
+    tgt_db_port: /demo/dbdevops/target/db/port
+    tgt_db_host: /demo/dbdevops/target/db/ssm/host
+    tgt_ssl_mode: /demo/dbdevops/target/db/ssl_mode
+    create_tgt_dms_certificate: /demo/dbdevops/target/db/create_tgt_dms_certificate
+    tgt_dms_certificate_name: /demo/dbdevops/target/db/dms_certificate_name
+  exported-variables:
+    - create_default_dms_roles
+    - create_dms_subnet_group
+    - dms_subnet_group_id
+    - dms_subnet_ids
+    - ri_count
+    - ri_prefix
+    - ri_publicly_accessible
+    - ri_availability_zone
+    - ri_instance_class
+    - ri_engine_version
+    - ri_allocated_storage
+    - ri_vpc_security_group_ids
+    - ri_monitoring_sns_topic
+    - ri_cw_logs_retentions
+    - CW_CustomNameSpace
+    - ri_preferred_maintenance_window
+    - oracle_db_version
+    - src_db_secret
+    - src_ep_prefix
+    - src_db_engine
+    - src_db_name
+    - src_db_port
+    - src_db_host
+    - src_read_replica
+    - src_rds
+    - create_src_dms_certificate
+    - src_dms_certificate_name
+    - tgt_db_secret
+    - tgt_ep_prefix
+    - tgt_db_engine
+    - tgt_db_name
+    - tgt_db_port
+    - tgt_db_host
+    - tgt_ssl_mode
+    - create_tgt_dms_certificate
+    - tgt_dms_certificate_name
+phases:
+  install:
+    commands:
+      #Terraform Install
+      - apt update
+      - apt -y install curl
+      - curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+      - sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com focal main"
+      - apt update
+      - apt -y install terraform=1.2.9
+      - apt update
+      - apt -y upgrade
+      - apt install -y golang-go
+      # Install tflint
+      - curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+  build:
+    commands:
+     - ls -lart
+     - pwd
+     - tflint --init
+     - tflint -f junit > tflint_report.xml
+reports:
+  tflint:
+    files:
+      - tflint_report.xml
+    base-directory: $CODEBUILD_SRC_DIR

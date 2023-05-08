@@ -1,0 +1,25 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      #Terraform Install
+      - apt update
+      - apt -y install curl
+      - curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+      - sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com focal main"
+      - apt update
+      - apt -y install terraform=1.2.9
+      - apt update
+      - apt -y upgrade
+      - apt install -y golang-go
+      # Install terraform_docs
+      - curl -sSLo ./terraform-docs.tar.gz https://terraform-docs.io/dl/v0.16.0/terraform-docs-v0.16.0-$(uname)-amd64.tar.gz
+      - tar -xzf terraform-docs.tar.gz
+      - chmod +x terraform-docs
+  build:
+    commands:
+     - ls -lrt
+     - pwd
+     - ./terraform-docs version
+     - ./terraform-docs markdown table . --output-file Readme.txt
