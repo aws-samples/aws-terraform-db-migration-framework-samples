@@ -1,5 +1,4 @@
-## Title
-Database Migration DevOps Framework
+## Database Migration DevOps Framework using Terraform samples
 
 ## Table of content
  * [Overview](#overview)
