@@ -1,0 +1,16 @@
+repository_name                     = "{{db-migration-devops}}"
+repository_branch                   = "main"
+build_project_source                = "CODEPIPELINE"
+builder_compute_type                = "BUILD_GENERAL1_SMALL"
+builder_image                       = "aws/codebuild/standard:5.0"
+builder_image_pull_credentials_type = "CODEBUILD"
+build_project_artifact_type         = "NO_ARTIFACTS"
+builder_type                        = "LINUX_CONTAINER"
+environment                         = "dev"
+project_name                        = "db-validation"
+build_timeout                       = 60
+source_repo_name                    = "{{db-migration-devops}}"
+source_repo_branch                  = "main"
+create_new_role                     = true
+buildspecyaml_directory             = "db-validation/terraform-iac/buildspecs"
+build_projects                      = ["account", "db_connect", "db_params", "sgs", "vpc_subnets"]

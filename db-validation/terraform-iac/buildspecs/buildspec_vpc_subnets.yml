@@ -1,0 +1,20 @@
+version: 0.2
+
+env:
+  variables:
+    NODE_ENV: "${env}"
+  parameter-store:
+    aws_region: "/demo/dbdevops/target/infra/aws_region"
+    vpc_id: /demo/dbdevops/target/infra/vpc_id
+    subnet_id: /demo/dbdevops/target/infra/subnet_ids
+phases:
+  install:
+    commands:
+      - echo Install required tools for vpc validation
+  pre_build:
+    commands:
+      - echo Prebuild phase for vpc validation
+  build:
+    commands:
+      - echo validate provided vpc and subnets
+      - ./db-validation/terraform-iac/scripts/validation-checks.sh infra $aws_region

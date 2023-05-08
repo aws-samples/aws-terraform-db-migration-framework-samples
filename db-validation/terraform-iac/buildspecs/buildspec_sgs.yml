@@ -1,0 +1,20 @@
+version: 0.2
+
+env:
+  variables:
+    NODE_ENV: "${env}"
+  parameter-store:
+    aws_region: "/demo/dbdevops/target/infra/aws_region"
+    sg_id: /demo/dbdevops/target/infra/sg_id
+
+phases:
+  install:
+    commands:
+      - echo Install required tools for security groups validation
+  pre_build:
+    commands:
+      - echo Prebuild phase for security group validation
+  build:
+    commands:
+      - echo validate provided security groups
+      - ./db-validation/terraform-iac/scripts/validation-checks.sh sg $aws_region

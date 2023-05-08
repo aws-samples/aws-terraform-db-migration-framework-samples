@@ -1,0 +1,60 @@
+project_name       = "aws-devops-integrated-pipeline"  
+build_project      = "integrated-code-build"
+pipelinename       = "aws-devops-integrated-pipeline"
+environment        = "dev"
+source_repo_name   = "db-migration-devops"
+source_repo_branch = "main"
+create_new_role    = true
+#codepipeline_iam_role_name = <Role name> - Use this to specify the role name to be used by codepipeline if the create_new_role flag is set to false.
+stage_input = [
+    { 
+        PipelineName = "db-validation-pipeline", 
+        sleeptime = "60", 
+        stage_name = "db-validation-pipeline", 
+        name = "single",
+        category = "Test",
+        env  = "integration",
+        owner = "AWS",
+        provider = "CodeBuild", 
+        input_artifacts = "SourceOutput", 
+        output_artifacts = "ValidationOutput" 
+    },
+    { 
+        PipelineName = "db-provisioning-pipeline", 
+        sleeptime = "60", 
+        stage_name = "db-provisioning-pipeline", 
+        name = "single",
+        category = "Test",
+        env  = "integration",
+        owner = "AWS",
+        provider = "CodeBuild", 
+        input_artifacts = "SourceOutput", 
+        output_artifacts = "DBProvisioningOutput"
+    },
+    {
+        PipelineName = "approvalpipeline",
+        sleeptime = "60",
+        stage_name = "Approval",
+        name = "Approval",
+        category = "Approval",
+        env  = "True",
+        owner = "AWS",
+        provider = "Manual",
+        input_artifacts = "",
+        output_artifacts = ""
+    },
+    {
+        PipelineName = "db-dms-pipeline",
+        sleeptime = "60",
+        stage_name = "db-dms-pipeline",
+        name = "single",
+        category = "Test",
+        env  = "integration",
+        owner = "AWS",
+        provider = "CodeBuild",
+        input_artifacts = "SourceOutput",
+        output_artifacts = "DMSProvisioningOutput"
+    }
+]
+build_projects = ["single"]
+buildspecyaml_directory = "db-cicd-integration/terraform-iac/BUILDSPEC_TEMPLATES"

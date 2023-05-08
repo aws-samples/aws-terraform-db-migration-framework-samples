@@ -1,0 +1,27 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      #Terraform Install
+      - apt update
+      - apt -y install curl
+      - curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+      - sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com focal main"
+      - apt update
+      - apt -y install terraform=1.2.9
+      - apt update
+      - apt -y upgrade
+      - apt install -y golang-go
+      # Install infracost
+      - curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh
+      - infracost --version
+  build:
+    commands:
+     - apikey=`aws secretsmanager get-secret-value --secret-id="tf/infracost/apikey" --query='SecretString' --output=text --region us-east-1 |jq -r .tf_infracost_apikey`
+     - export INFRACOST_API_KEY=$apikey
+     - infracost breakdown --path . --format=json --out-file=infracost-base.json
+     - ls -lrt
+     - pwd
+     - infracost diff --path . --format=json --compare-to=infracost-base.json --out-file=infracost-diff.json
+     - infracost output --path infracost-diff.json --format html --out-file report.html

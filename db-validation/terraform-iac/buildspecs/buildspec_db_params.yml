@@ -1,0 +1,22 @@
+version: 0.2
+
+env:
+  variables:
+    NODE_ENV: "${env}"
+  parameter-store:
+    aws_region: "/demo/dbdevops/target/infra/aws_region"
+    source_secret_mgr: /demo/dbdevops/source/db/secret_mgr_name
+    source_db_host: /demo/dbdevops/source/db/host
+    source_db_port: /demo/dbdevops/source/db/port
+
+phases:
+  install:
+    commands:
+      - echo Install required tools for source db reachability validation
+  pre_build:
+    commands:
+      - echo Prebuild phase for source db reachability validation
+  build:
+    commands:
+      - echo validate provided source db reachability
+      - ./db-validation/terraform-iac/scripts/validation-checks.sh ssm $aws_region
