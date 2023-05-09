@@ -81,3 +81,14 @@ This solution may help :
 
 ## Limitations
 * This aws sample supports homogeneous migration only.
+
+
+## Contributors
+- Aarti Rajput
+- Aniket Dekate
+- Ashish Bhatt
+- Nadeem Rehman
+- Naveen Suthar
+- Rahul Gaikwad
+- Ruchika Modi
+- Tamilselvan P
