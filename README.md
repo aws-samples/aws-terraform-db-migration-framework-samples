@@ -89,6 +89,6 @@ This solution may help :
 - Ashish Bhatt
 - Nadeem Rehman
 - Naveen Suthar
-- Rahul Gaikwad
+- Dr. Rahul Gaikwad
 - Ruchika Modi
 - Tamilselvan P
